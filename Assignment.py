@@ -4,8 +4,9 @@ import random as rnd
 import os
 
 
+# Func author: James Simpson
+# This function is to calculate the difference in two colours
 def evaluate(colour1, colour2):
-
     # This is the break down of colour one
     red1, green1, blue1 = float(colour1[0]), float(colour1[1]), float(colour1[2])
     # This is the break down of colour two
@@ -18,18 +19,48 @@ def evaluate(colour1, colour2):
 
     return distance
 
-    
+
+# Create a new random index
+def random_index(lis):
+
+    index_rand = rnd.randint(0, (len(lis) - 1))
+    return index_rand
+
+
+# Func author: James Simpson
+# This is an implementation of a greedy heuristic to sort the colours into
+# colour order
 def greedy_heuristics(colour_list):
+    orig_colour_list = colour_list
     sorted_colours = []
-    col = 0
+    more_colours = True
+    dis = 0
+    next_dis = 1
+    distances = []  # Keeping a record of all the distances from the initial colour to then compare new distances
 
-    start_colour_index = rnd.randint(0, len(colour_list))
-    sorted_colours.append(colour_list[start_colour_index])
-    del colour_list[start_colour_index]
+    random_start_index = random_index(orig_colour_list)
+    start_colour = colour_list[random_start_index]
+    sorted_colours.append(start_colour)
+    distances.append(dis)
+    del orig_colour_list[random_start_index]
 
-    while col in colour_list:
-        start_colour_index = rnd.randint(0, len(colour_list))
+    while more_colours:
+        for col in orig_colour_list:
+            dis = evaluate(start_colour, col)
+            distances.append(dis)
+        more_colours = False
 
+    closest_distance = 0
+    while dis in range(len(distances)):
+        while next_dis in range(distances):
+            if next_dis > dis:
+                closest_distance = distances.index(next_dis)
+
+    print("the lowest is : " + str(closest_distance))
+
+    # print("The sorted colours are: " + str(sorted_colours))
+    print("The list of ordered distances is: " + str(distances))
+    return sorted_colours
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
@@ -72,14 +103,18 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 100  # Size of the subset of colours for testing
+test_size = 10  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
                          test_size)  # produces random pemutation of lenght test_size, from the numbers 0 to
-                                     # test_size -1
-plot_colours(test_colours, permutation)
+# test_size -1
+# plot_colours(test_colours, permutation)
 
-d = evaluate(colours[1], colours[6])
-print(str(d))
+# d1 = evaluate(colours[1], colours[6])
+# d2 = evaluate(colours[10], colours[6])
+# print(str(d1))
+# print(str(d2))
 
+sorted_col = greedy_heuristics(test_colours)
+# plot_colours(sorted_col, permutation)
