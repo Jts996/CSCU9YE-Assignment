@@ -5,22 +5,15 @@ import os
 
 
 def evaluate(colour1, colour2):
-    print("Colour 1: " + str(colour1))
-    print("Colour 2: " + str(colour2))
 
     # This is the break down of colour one
-    red1 = float(colour1[0])
-    green1 = float(colour1[1])
-    blue1 = float(colour1[2])
+    red1, green1, blue1 = float(colour1[0]), float(colour1[1]), float(colour1[2])
     # This is the break down of colour two
-    red2 = float(colour2[0])
-    green2 = float(colour2[1])
-    blue2 = float(colour2[2])
+    red2, green2, blue2 = float(colour2[0]), float(colour2[1]), float(colour2[2])
+    # Calculating the differences between the different colour RGB values
+    red_diff, green_diff, blue_diff = (red2 - red1), (green2 - green1), (blue2 - blue1)
 
-    red_diff = red2 - red1
-    green_diff = green2 - green1
-    blue_diff = blue2 - blue1
-
+    # Finally conducting Pythagoras to find the Euclidean distance
     distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
 
     return distance
