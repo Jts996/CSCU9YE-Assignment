@@ -7,16 +7,23 @@ import os
 def evaluate(colour1, colour2):
     print("Colour 1: " + str(colour1))
     print("Colour 2: " + str(colour2))
-    # This is the break down of colour one
-    red1 = colour1[0]
-    green1 = colour1[1]
-    blue1 = colour1[2]
-    # print("Colour1 has red: " + str(red1) + " green: " + str(green1) + " blue: " + str(blue1))
 
+    # This is the break down of colour one
+    red1 = float(colour1[0])
+    green1 = float(colour1[1])
+    blue1 = float(colour1[2])
     # This is the break down of colour two
-    red2 = colours[0]
-    green2 = colour2[1]
-    blue2 = colour2[2]
+    red2 = float(colour2[0])
+    green2 = float(colour2[1])
+    blue2 = float(colour2[2])
+
+    red_diff = red2 - red1
+    green_diff = green2 - green1
+    blue_diff = blue2 - blue1
+
+    distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
+
+    return distance
 
     
 def greedy_heuristics(colour_list):
@@ -80,6 +87,6 @@ permutation = rnd.sample(range(test_size),
                                      # test_size -1
 plot_colours(test_colours, permutation)
 
-evaluate(colours[1], colours[6])
-
+d = evaluate(colours[1], colours[6])
+print(str(d))
 
