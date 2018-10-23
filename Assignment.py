@@ -17,6 +17,8 @@ def evaluate(colour1, colour2):
     # Finally conducting Pythagoras to find the Euclidean distance
     distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
 
+    distance = distance.euclidean(colour1, colour2)
+
     return distance
 
 
@@ -33,9 +35,7 @@ def random_index(lis):
 def greedy_heuristics(colour_list):
     orig_colour_list = colour_list
     sorted_colours = []
-    more_colours = True
     dis = 0
-    next_dis = 1
     distances = []  # Keeping a record of all the distances from the initial colour to then compare new distances
 
     random_start_index = random_index(orig_colour_list)
@@ -44,21 +44,20 @@ def greedy_heuristics(colour_list):
     distances.append(dis)
     del orig_colour_list[random_start_index]
 
-    while more_colours:
-        for col in orig_colour_list:
-            dis = evaluate(start_colour, col)
-            distances.append(dis)
-        more_colours = False
+    for test_colour in orig_colour_list:
+        dis = evaluate(start_colour, test_colour)
+        distances.append(dis)
 
-    closest_distance = 0
-    while dis in range(len(distances)):
-        while next_dis in range(distances):
-            if next_dis > dis:
-                closest_distance = distances.index(next_dis)
+    colour = 0
+    while colour < (len(distances) - 1):
+        lowest = min(distances)
+        colour_lowest_distance = distances.index(lowest)
+        next_colour = orig_colour_list[colour_lowest_distance]
+        sorted_colours.append(next_colour)
+        colour += 1
 
-    print("the lowest is : " + str(closest_distance))
-
-    # print("The sorted colours are: " + str(sorted_colours))
+    distances = sorted(distances)
+    print("The sorted colours are: " + str(sorted_colours))
     print("The list of ordered distances is: " + str(distances))
     return sorted_colours
 
@@ -103,7 +102,7 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 10  # Size of the subset of colours for testing
+test_size = 100  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
@@ -117,4 +116,6 @@ permutation = rnd.sample(range(test_size),
 # print(str(d2))
 
 sorted_col = greedy_heuristics(test_colours)
-# plot_colours(sorted_col, permutation)
+print(str(permutation))
+print(str(len(sorted_col)))
+plot_colours(sorted_col, permutation)
