@@ -17,8 +17,6 @@ def evaluate(colour1, colour2):
     # Finally conducting Pythagoras to find the Euclidean distance
     distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
 
-    distance = distance.euclidean(colour1, colour2)
-
     return distance
 
 
@@ -44,11 +42,14 @@ def greedy_heuristics(colour_list):
     distances.append(dis)
     del orig_colour_list[random_start_index]
 
+    # Calculating all the distances from the start colour
     for test_colour in orig_colour_list:
         dis = evaluate(start_colour, test_colour)
         distances.append(dis)
 
     colour = 0
+    # Sorting the colours using the list of distances
+    # Sorted in ascending order
     while colour < (len(distances) - 1):
         lowest = min(distances)
         colour_lowest_distance = distances.index(lowest)
@@ -56,9 +57,6 @@ def greedy_heuristics(colour_list):
         sorted_colours.append(next_colour)
         colour += 1
 
-    distances = sorted(distances)
-    print("The sorted colours are: " + str(sorted_colours))
-    print("The list of ordered distances is: " + str(distances))
     return sorted_colours
 
 # Reads the file  of colours
