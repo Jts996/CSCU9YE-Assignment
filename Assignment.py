@@ -114,6 +114,4 @@ permutation = rnd.sample(range(test_size),
 # print(str(d2))
 
 sorted_col = greedy_heuristics(test_colours)
-print(str(permutation))
-print(str(len(sorted_col)))
 plot_colours(sorted_col, permutation)
