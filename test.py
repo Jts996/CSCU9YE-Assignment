@@ -37,37 +37,42 @@ def hill_climbing(colour_list):
 
     s = colour_list
 
+    # this was just a check to see if it was working
     totaltest = 0
     for a in range(99):
         z = evaluate(s[a], s[a + 1])
         totaltest = totaltest + z
     print(totaltest)
-
+    
+#repeat however many times you feel is necessary
     for i in range(1000):
-
+        #make a copy of our start array
         r = s[:]
-
+        #take two random array in the array as x and y and their respective indexs as p and q
         x = rnd.choice(r)
         p = r.index(x)
 
         y = rnd.choice(r)
         q = r.index(y)
-
+        #check they are not the same colour in the array
         if p != q:
-
+            #if they are not then swap them
             r[p], r[q] = r[q], r[p]
-
+            #check to see the post swapped arrays difference
             total = 0
             for a in range(99):
                 z = evaluate(s[a], s[a+1])
                 total = total + z
+            #check to see the pre swapped arrays difference
             newtotal = 0
             for a in range(99):
                 v = evaluate(r[a], r[a+1])
                 newtotal = newtotal + v
+            #if the old array is closer to the solution set it back
             if newtotal <= total:
                 s = r[:]
-
+                
+ # this was just a check to see if it was working
     totalfinished = 0
     for a in range(99):
         z = evaluate(s[a], s[a + 1])
@@ -125,6 +130,7 @@ permutation = rnd.sample(range(test_size),
                                      # test_size -1
 plot_colours(test_colours, permutation)
 
+#this was my attempt to print it out on the plot i dont really understand the permutation so could be that
 sorted_colours = hill_climbing(test_colours)
 plot_colours(sorted_colours, permutation)
 
