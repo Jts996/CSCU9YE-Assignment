@@ -56,8 +56,14 @@ def greedy_heuristics(colour_list):
         next_colour = orig_colour_list[colour_lowest_distance]
         sorted_colours.append(next_colour)
         colour += 1
-
+    print(str(orig_colour_list))
+    print(str(sorted_colours))
     return sorted_colours
+
+# Func author: James Simpson
+# This is an implementation of th Hill Climbing algorithm
+def hill_climbing():
+    print()
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
@@ -78,7 +84,7 @@ def read_file(fname):
 # Input, list of colours, and ordering  of colours.
 # They need to be of the same length
 
-def plot_colours(col, perm):
+def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
     ratio = 10  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
@@ -89,6 +95,7 @@ def plot_colours(col, perm):
     fig, axes = plt.subplots(1, figsize=(8, 4))  # figsize=(width,height) handles window dimensions
     axes.imshow(img, interpolation='nearest')
     axes.axis('off')
+    plt.title(name)
     plt.show()
 
 
@@ -106,7 +113,7 @@ test_colours = colours[0:test_size]  # list of colours for testing
 permutation = rnd.sample(range(test_size),
                          test_size)  # produces random pemutation of lenght test_size, from the numbers 0 to
 # test_size -1
-# plot_colours(test_colours, permutation)
+plot_colours(test_colours, permutation, "Original")
 
 # d1 = evaluate(colours[1], colours[6])
 # d2 = evaluate(colours[10], colours[6])
@@ -114,4 +121,7 @@ permutation = rnd.sample(range(test_size),
 # print(str(d2))
 
 sorted_col = greedy_heuristics(test_colours)
-plot_colours(sorted_col, permutation)
+print(str(sorted_col))
+permutation = rnd.sample(range(len(sorted_col)),
+                         test_size)
+plot_colours(sorted_col, permutation, "Greedy")

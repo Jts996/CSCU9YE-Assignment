@@ -36,20 +36,15 @@ def greedy_heuristics(colour_list):
 def hill_climbing(colour_list):
 
     s = colour_list
-
-    # this was just a check to see if it was working
-    totaltest = 0
-    for a in range(99):
-        z = evaluate(s[a], s[a + 1])
-        totaltest = totaltest + z
-    print(totaltest)
     
 #repeat however many times you feel is necessary
     for i in range(1000):
         #make a copy of our start array
-        r = s[:]
+        r = s
+        print("The original array: " + str(r))
         #take two random array in the array as x and y and their respective indexs as p and q
         x = rnd.choice(r)
+        print("The random array is: " + str(x))
         p = r.index(x)
 
         y = rnd.choice(r)
@@ -60,24 +55,19 @@ def hill_climbing(colour_list):
             r[p], r[q] = r[q], r[p]
             #check to see the post swapped arrays difference
             total = 0
-            for a in range(99):
+            for a in range(len(s) - 1):
                 z = evaluate(s[a], s[a+1])
                 total = total + z
             #check to see the pre swapped arrays difference
             newtotal = 0
-            for a in range(99):
+            for a in range(len(r) - 1):
                 v = evaluate(r[a], r[a+1])
                 newtotal = newtotal + v
             #if the old array is closer to the solution set it back
             if newtotal <= total:
                 s = r[:]
                 
- # this was just a check to see if it was working
-    totalfinished = 0
-    for a in range(99):
-        z = evaluate(s[a], s[a + 1])
-        totalfinished = totalfinished + z
-    print(totalfinished)
+
 
     return s
 
@@ -100,7 +90,7 @@ def read_file(fname):
 # Input, list of colours, and ordering  of colours.
 # They need to be of the same length
 
-def plot_colours(col, perm):
+def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
     ratio = 10  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
@@ -111,6 +101,7 @@ def plot_colours(col, perm):
     fig, axes = plt.subplots(1, figsize=(8, 4))  # figsize=(width,height) handles window dimensions
     axes.imshow(img, interpolation='nearest')
     axes.axis('off')
+
     plt.show()
 
 
@@ -122,18 +113,20 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 100  # Size of the subset of colours for testing
+test_size = 10  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
                          test_size)  # produces random pemutation of lenght test_size, from the numbers 0 to
                                      # test_size -1
-plot_colours(test_colours, permutation)
+plot_colours(test_colours, permutation, "Original plot")
 
 #this was my attempt to print it out on the plot i dont really understand the permutation so could be that
 sorted_colours = hill_climbing(test_colours)
-plot_colours(sorted_colours, permutation)
+plot_colours(sorted_colours, permutation, "Greedy Algorithm")
 
 d = evaluate(colours[1], colours[6])
 print(str(d))
 
+sorted_colours = hill_climbing(test_colours)
+plot_colours(sorted_colours, permutation, "Hill Climb")
