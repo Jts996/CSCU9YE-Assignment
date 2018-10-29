@@ -40,7 +40,7 @@ def hill_climbing(colour_list):
 #repeat however many times you feel is necessary
     for i in range(1000):
         #make a copy of our start array
-        r = s
+        r = s[:]
         print("The original array: " + str(r))
         #take two random array in the array as x and y and their respective indexs as p and q
         x = rnd.choice(r)
