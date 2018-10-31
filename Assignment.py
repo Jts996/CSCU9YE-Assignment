@@ -6,6 +6,7 @@ import os
 
 # Func author: James Simpson
 # This function is to calculate the difference in two colours
+
 def evaluate(colour1, colour2):
     # This is the break down of colour one
     red1, green1, blue1 = float(colour1[0]), float(colour1[1]), float(colour1[2])
@@ -18,7 +19,6 @@ def evaluate(colour1, colour2):
     distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
 
     return distance
-
 
 # Create a new random index
 def random_index(lis):
@@ -68,7 +68,14 @@ def hill_climbing(colour_list):
     best_solution = initial_solution  # This is the best solution found within the specified number of iterations
     not_best = True  # Flag for the while loop
     iterations = 0  # To track the number of loops in the while loop
+    total = []
     print("Length of best start solution: " + str(len(best_solution)))
+
+    total_one = 0  # The total between the colours in the current best solution
+    for col in range(len(best_solution) - 1):
+        dis = evaluate(best_solution[col], best_solution[col + 1])
+        total_one = total_one + dis
+
     while not_best:
 
         random_solution = []  # This is the new random solution
@@ -78,11 +85,6 @@ def hill_climbing(colour_list):
             random_solution.append(best_solution[random_colour])
 
         if best_solution != random_solution:
-
-            total_one = 0  # The total between the colours in the current best solution
-            for col in range(len(best_solution) - 1):
-                dis = evaluate(best_solution[col], best_solution[col + 1])
-                total_one = total_one + dis
 
             total_two = 0  # This is the total distance between the colours in the new random solution
             for col in range(len(random_solution) - 1):
@@ -94,16 +96,17 @@ def hill_climbing(colour_list):
             if total_two < total_one:
                 best_solution = random_solution[:]
                 print("The best solution is: " + str(best_solution))
+                total.append(total_two)
+                total_one = total_two
             else:
                 iterations += 1
         else:
             iterations += 1
 
-        if iterations == 10:
+        if iterations == 100:
             not_best = False
     print("Length of best solution at end of function is: " + str(len(best_solution)))
     return best_solution
-
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
@@ -148,7 +151,7 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 100  # Size of the subset of colours for testing
+test_size = 10  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
@@ -169,7 +172,7 @@ plot_colours(sorted_col, permutation, "Greedy")
 
 sorted_col = hill_climbing(test_colours)
 permutation = rnd.sample(range(len(sorted_col)),
-                         test_size)
+                         len(sorted_col))
 print("Length of sample: " + str(len(permutation)))
 print("length of the colours: " + str(len(sorted_col)))
 plot_colours(sorted_col, permutation, "Hill-Climbing")
