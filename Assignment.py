@@ -3,6 +3,8 @@ import numpy as np
 import random as rnd
 import os
 
+test_colours = []
+
 
 # Func author: James Simpson
 # This function is to calculate the difference in two colours
@@ -20,11 +22,21 @@ def evaluate(colour1, colour2):
 
     return distance
 
+
 # Create a new random index
 def random_index(lis):
-
     index_rand = rnd.randint(0, (len(lis) - 1))
     return index_rand
+
+
+# Create random solutions
+def random_solution(lst):
+    rnd_solution = []
+    for ind in range(len(lst)):
+        random_colour = lst[random_index(lst)]
+        rnd_solution.append(random_colour)
+
+    return rnd_solution
 
 
 # Func author: James Simpson
@@ -60,52 +72,95 @@ def greedy_heuristics(colour_list):
     return sorted_colours
 
 
+# Method to calculate the total distance of a solution
+def cal_total(sol):
+    s = sol
+    total = 0
+    for ind in range(len(s) - 1):
+        dis = evaluate(s[ind], s[ind + 1])
+        total = total + dis
+    return total
+
+
+#  Method which receives a solution and uses 1-bit flp to find whether or not it  can find a better solution
+def local_optima(sol):
+    s = sol
+    total_one = cal_total(sol)
+
+    optima = False
+    ind = 0
+    while ind < len(s):
+        random_sol = random_solution(sol)
+        total_two = cal_total(random_sol)
+        print("I'm here")
+        if total_two < total_one:
+            total_one = total_two
+            optima = True
+        else:
+            optima = False
+        ind += 1
+    print("Optima is: " + str(optima))
+    return optima
+
+
+# Finding the next valid Solution
+def random_better_solution(sol):
+    not_better = True
+    current_best_total = cal_total(sol)
+    while not_better:
+        temp_sol = sol
+        temp_sol = random_solution(temp_sol)
+        competitor_total = cal_total(temp_sol)
+
+        if competitor_total < current_best_total:
+            sol = temp_sol
+            not_better = False
+    return sol
+
+
 # Func author: Chris Hayes & James Simpson
 # This is an implementation of th Hill Climbing algorithm
-def hill_climbing(colour_list):
-
-    initial_solution = colour_list  # This is a copy of the original list
+def hill_climbing():
+    initial_solution = random_solution(test_colours)  # This is the original random list
     best_solution = initial_solution  # This is the best solution found within the specified number of iterations
     not_best = True  # Flag for the while loop
-    iterations = 0  # To track the number of loops in the while loop
-    total = []
-    print("Length of best start solution: " + str(len(best_solution)))
-
-    total_one = 0  # The total between the colours in the current best solution
-    for col in range(len(best_solution) - 1):
-        dis = evaluate(best_solution[col], best_solution[col + 1])
-        total_one = total_one + dis
-
+    totals = []
+    best_total = cal_total(best_solution)  # The total between the colours in the current best solution
+    totals.append(best_total)
     while not_best:
-
-        random_solution = []  # This is the new random solution
-        # This creates the random solution
-        for ind in range(len(best_solution)):
-            random_colour = random_index(best_solution)
-            random_solution.append(best_solution[random_colour])
-
         if best_solution != random_solution:
-
-            total_two = 0  # This is the total distance between the colours in the new random solution
-            for col in range(len(random_solution) - 1):
-                    dis = evaluate(random_solution[col], random_solution[col + 1])
-                    total_two = total_two + dis
+            competitor_solution = random_solution(best_solution)
+            competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
+            # the new random solution
 
             # If the total distance of the new solution is less than the old solution
             # this is the new best solution
-            if total_two < total_one:
-                best_solution = random_solution[:]
-                print("The best solution is: " + str(best_solution))
-                total.append(total_two)
-                total_one = total_two
+            if competitor_total < best_total:
+                best_solution = competitor_solution
+                # print("The best solution is: " + str(best_solution))
+                best_total = competitor_total
+                totals.append(competitor_total)
             else:
-                iterations += 1
+                not_best = local_optima(best_solution)
         else:
-            iterations += 1
-
-        if iterations == 100:
-            not_best = False
+            not_best = local_optima(best_solution)
     print("Length of best solution at end of function is: " + str(len(best_solution)))
+    print(totals)
+    return best_solution, best_total
+
+
+def mhc(tries):
+    best_solution = random_solution(test_colours)
+    iterations = 0
+    total = cal_total(best_solution)
+
+    while iterations < tries:
+        competitor_sol, competitior_tot = hill_climbing()
+        if competitior_tot < total:
+            best_solution = competitor_sol
+            total = competitior_tot
+        iterations += 1
+
     return best_solution
 
 # Reads the file  of colours
@@ -170,9 +225,15 @@ permutation = rnd.sample(range(len(sorted_col)),
 print(str(permutation))
 plot_colours(sorted_col, permutation, "Greedy")
 
-sorted_col = hill_climbing(test_colours)
+sorted_col, tot = hill_climbing()
 permutation = rnd.sample(range(len(sorted_col)),
                          len(sorted_col))
 print("Length of sample: " + str(len(permutation)))
 print("length of the colours: " + str(len(sorted_col)))
 plot_colours(sorted_col, permutation, "Hill-Climbing")
+
+
+sorted_col = mhc(10)
+permutation = rnd.sample(range(len(sorted_col)),
+                         len(sorted_col))
+plot_colours(sorted_col, permutation, "Multi run Hill Climb")
