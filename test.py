@@ -37,38 +37,35 @@ def hill_climbing(colour_list):
 
     s = colour_list
     
-#repeat however many times you feel is necessary
+    # repeat however many times you feel is necessary
     for i in range(1000):
-        #make a copy of our start array
+        # make a copy of our start array
         r = s
         print("The original array: " + str(r))
-        #take two random array in the array as x and y and their respective indexs as p and q
+        # take two random array in the array as x and y and their respective indexs as p and q
         x = rnd.choice(r)
         print("The random array is: " + str(x))
         p = r.index(x)
 
         y = rnd.choice(r)
         q = r.index(y)
-        #check they are not the same colour in the array
+        # check they are not the same colour in the array
         if p != q:
-            #if they are not then swap them
+            # if they are not then swap them
             r[p], r[q] = r[q], r[p]
-            #check to see the post swapped arrays difference
+            # check to see the post swapped arrays difference
             total = 0
             for a in range(len(s) - 1):
                 z = evaluate(s[a], s[a+1])
                 total = total + z
-            #check to see the pre swapped arrays difference
+            # check to see the pre swapped arrays difference
             newtotal = 0
             for a in range(len(r) - 1):
                 v = evaluate(r[a], r[a+1])
                 newtotal = newtotal + v
-            #if the old array is closer to the solution set it back
+            # if the old array is closer to the solution set it back
             if newtotal <= total:
                 s = r[:]
-                
-
-
     return s
 
 # Reads the file  of colours

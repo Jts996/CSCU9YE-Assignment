@@ -56,14 +56,54 @@ def greedy_heuristics(colour_list):
         next_colour = orig_colour_list[colour_lowest_distance]
         sorted_colours.append(next_colour)
         colour += 1
-    print(str(orig_colour_list))
-    print(str(sorted_colours))
+
     return sorted_colours
 
-# Func author: James Simpson
+
+# Func author: Chris Hayes & James Simpson
 # This is an implementation of th Hill Climbing algorithm
-def hill_climbing():
-    print()
+def hill_climbing(colour_list):
+
+    initial_solution = colour_list  # This is a copy of the original list
+    best_solution = initial_solution  # This is the best solution found within the specified number of iterations
+    not_best = True  # Flag for the while loop
+    iterations = 0  # To track the number of loops in the while loop
+    print("Length of best start solution: " + str(len(best_solution)))
+    while not_best:
+
+        random_solution = []  # This is the new random solution
+        # This creates the random solution
+        for ind in range(len(best_solution)):
+            random_colour = random_index(best_solution)
+            random_solution.append(best_solution[random_colour])
+
+        if best_solution != random_solution:
+
+            total_one = 0  # The total between the colours in the current best solution
+            for col in range(len(best_solution) - 1):
+                dis = evaluate(best_solution[col], best_solution[col + 1])
+                total_one = total_one + dis
+
+            total_two = 0  # This is the total distance between the colours in the new random solution
+            for col in range(len(random_solution) - 1):
+                    dis = evaluate(random_solution[col], random_solution[col + 1])
+                    total_two = total_two + dis
+
+            # If the total distance of the new solution is less than the old solution
+            # this is the new best solution
+            if total_two < total_one:
+                best_solution = random_solution[:]
+                print("The best solution is: " + str(best_solution))
+            else:
+                iterations += 1
+        else:
+            iterations += 1
+
+        if iterations == 10:
+            not_best = False
+    print("Length of best solution at end of function is: " + str(len(best_solution)))
+    return best_solution
+
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
@@ -83,11 +123,12 @@ def read_file(fname):
 # Display the colours in the order of the permutation in a pyplot window
 # Input, list of colours, and ordering  of colours.
 # They need to be of the same length
+# Added name so that each plot can be identified
 
 def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
-    ratio = 10  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
+    ratio = 100  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
     img = np.zeros((ratio, len(col), 3))
     for i in range(0, len(col)):
         img[:, i, :] = colours[perm[i]]
@@ -111,7 +152,7 @@ test_size = 100  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
-                         test_size)  # produces random pemutation of lenght test_size, from the numbers 0 to
+                         test_size)  # produces random permutation of length test_size, from the numbers 0 to
 # test_size -1
 plot_colours(test_colours, permutation, "Original")
 
@@ -121,7 +162,14 @@ plot_colours(test_colours, permutation, "Original")
 # print(str(d2))
 
 sorted_col = greedy_heuristics(test_colours)
-print(str(sorted_col))
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
+print(str(permutation))
 plot_colours(sorted_col, permutation, "Greedy")
+
+sorted_col = hill_climbing(test_colours)
+permutation = rnd.sample(range(len(sorted_col)),
+                         test_size)
+print("Length of sample: " + str(len(permutation)))
+print("length of the colours: " + str(len(sorted_col)))
+plot_colours(sorted_col, permutation, "Hill-Climbing")
