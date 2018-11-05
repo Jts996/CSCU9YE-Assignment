@@ -43,19 +43,18 @@ def random_solution(lst):
 # This is an implementation of a greedy heuristic to sort the colours into
 # colour order
 def greedy_heuristics(colour_list):
-    orig_colour_list = colour_list
+    rnd_colour_list = random_solution(colour_list)
     sorted_colours = []
     dis = 0
     distances = []  # Keeping a record of all the distances from the initial colour to then compare new distances
 
-    random_start_index = random_index(orig_colour_list)
-    start_colour = colour_list[random_start_index]
+    start_colour = rnd_colour_list[0]
     sorted_colours.append(start_colour)
     distances.append(dis)
-    del orig_colour_list[random_start_index]
+    del rnd_colour_list[0]
 
     # Calculating all the distances from the start colour
-    for test_colour in orig_colour_list:
+    for test_colour in rnd_colour_list:
         dis = evaluate(start_colour, test_colour)
         distances.append(dis)
 
@@ -65,10 +64,9 @@ def greedy_heuristics(colour_list):
     while colour < (len(distances) - 1):
         lowest = min(distances)
         colour_lowest_distance = distances.index(lowest)
-        next_colour = orig_colour_list[colour_lowest_distance]
+        next_colour = rnd_colour_list[colour_lowest_distance]
         sorted_colours.append(next_colour)
         colour += 1
-
     return sorted_colours
 
 
@@ -92,14 +90,12 @@ def local_optima(sol):
     while ind < len(s):
         random_sol = random_solution(sol)
         total_two = cal_total(random_sol)
-        print("I'm here")
         if total_two < total_one:
             total_one = total_two
             optima = True
         else:
             optima = False
         ind += 1
-    print("Optima is: " + str(optima))
     return optima
 
 
@@ -144,8 +140,6 @@ def hill_climbing():
                 not_best = local_optima(best_solution)
         else:
             not_best = local_optima(best_solution)
-    print("Length of best solution at end of function is: " + str(len(best_solution)))
-    print(totals)
     return best_solution, best_total
 
 
@@ -155,13 +149,14 @@ def mhc(tries):
     total = cal_total(best_solution)
 
     while iterations < tries:
-        competitor_sol, competitior_tot = hill_climbing()
-        if competitior_tot < total:
+        competitor_sol, competitor_tot = hill_climbing()
+        if competitor_tot < total:
             best_solution = competitor_sol
-            total = competitior_tot
+            total = competitor_tot
         iterations += 1
 
     return best_solution
+
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
@@ -186,7 +181,7 @@ def read_file(fname):
 def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
-    ratio = 100  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
+    ratio = 4  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
     img = np.zeros((ratio, len(col), 3))
     for i in range(0, len(col)):
         img[:, i, :] = colours[perm[i]]
@@ -206,7 +201,7 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 10  # Size of the subset of colours for testing
+test_size = 500  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
@@ -222,18 +217,15 @@ plot_colours(test_colours, permutation, "Original")
 sorted_col = greedy_heuristics(test_colours)
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
-print(str(permutation))
 plot_colours(sorted_col, permutation, "Greedy")
 
 sorted_col, tot = hill_climbing()
 permutation = rnd.sample(range(len(sorted_col)),
                          len(sorted_col))
-print("Length of sample: " + str(len(permutation)))
-print("length of the colours: " + str(len(sorted_col)))
 plot_colours(sorted_col, permutation, "Hill-Climbing")
 
 
 sorted_col = mhc(10)
 permutation = rnd.sample(range(len(sorted_col)),
                          len(sorted_col))
-plot_colours(sorted_col, permutation, "Multi run Hill Climb")
+plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
