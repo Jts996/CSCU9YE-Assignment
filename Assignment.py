@@ -29,25 +29,25 @@ def random_index(lis):
     return index_rand
 
 
-# Create random index not including first index
-def random_index_greater_zero(lis):
-    index_rand = rnd.randint(1, (len(lis) - 1))
+#  create random index not including first element
+def random_index_greater_zero(lst):
+    index_rand = rnd.randint(1, (len(lst) - 1))
     return index_rand
 
 
 # Create random solutions
 def random_solution(lst):
     rnd_solution = []
-    for ind in range(len(lst) + 1):
-        rnd_solution = swap_colours(lst)
+    for ind in range(len(lst)):
+       rnd_solution = swap_colours(lst)
+
     return rnd_solution
 
 
 # Swap two colours
-def swap_colours(lis):
-    new_solution = lis
+def swap_colours(lst):
+    new_solution = lst
     not_swapped = True
-    # print("Starting colour: " + str(new_solution[0]))
 
     while not_swapped:
         random_index_one = random_index_greater_zero(new_solution)
@@ -56,15 +56,9 @@ def swap_colours(lis):
         if random_index_one != random_index_two:
             colour_one = new_solution[random_index_one]
             colour_two = new_solution[random_index_two]
-            # print("Colour one: " + str(colour_one))
-            # print("Colour two: " + str(colour_two))
             new_solution[random_index_one] = colour_two
             new_solution[random_index_two] = colour_one
-            # print("New colour one: " + str(new_solution[random_index_one]))
-            # print("New colour two: " + str(new_solution[random_index_two]))
             not_swapped = False
-    # print("starting colour: " + str(new_solution[0]))
-    # print("Swapped list: " + str(len(new_solution)))
     return new_solution
 
 
@@ -72,18 +66,17 @@ def swap_colours(lis):
 # This is an implementation of a greedy heuristic to sort the colours into
 # colour order
 def greedy_heuristics(colour_list):
-    orig_colour_list = colour_list
+    rnd_colour_list = random_solution(colour_list)
     sorted_colours = []
     dis = 0
     distances = []  # Keeping a record of all the distances from the initial colour to then compare new distances
 
-    random_start_index = random_index(orig_colour_list)
-    start_colour = colour_list[random_start_index]
+    start_colour = rnd_colour_list[0]
     sorted_colours.append(start_colour)
     distances.append(dis)
 
     # Calculating all the distances from the start colour
-    for test_colour in orig_colour_list:
+    for test_colour in rnd_colour_list:
         dis = evaluate(start_colour, test_colour)
         distances.append(dis)
 
@@ -93,7 +86,7 @@ def greedy_heuristics(colour_list):
     while colour < (len(distances) - 1):
         lowest = min(distances)
         colour_lowest_distance = distances.index(lowest)
-        next_colour = orig_colour_list[colour_lowest_distance]
+        next_colour = rnd_colour_list[colour_lowest_distance]
         sorted_colours.append(next_colour)
         colour += 1
     return sorted_colours
@@ -153,18 +146,18 @@ def hill_climbing():
     best_total = cal_total(best_solution)  # The total between the colours in the current best solution
     totals.append(best_total)
     while not_best:
-        competitor_solution = random_better_solution(best_solution)
+        competitor_solution = random_solution(best_solution)
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
         # the new random solution
-        if best_solution != competitor_solution:
+        if best_solution != random_solution:
 
             # If the total distance of the new solution is less than the old solution
             # this is the new best solution
             if competitor_total < best_total:
                 best_solution = competitor_solution
+                # print("The best solution is: " + str(best_solution))
                 best_total = competitor_total
                 totals.append(competitor_total)
-                not_best = local_optima(best_solution)
             else:
                 not_best = local_optima(best_solution)
         else:
@@ -210,7 +203,7 @@ def read_file(fname):
 def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
-    ratio = 100  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
+    ratio = 4  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
     img = np.zeros((ratio, len(col), 3))
     for i in range(0, len(col)):
         img[:, i, :] = colours[perm[i]]
@@ -257,4 +250,4 @@ plot_colours(sorted_col, permutation, "Hill-Climbing")
 sorted_col = mhc(10)
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
-plot_colours(sorted_col, permutation, "Multi run Hill Climb")
+plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
