@@ -321,3 +321,8 @@ sorted_col = mhc(10)
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
 plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
+
+sorted_col = tabu()
+permutation = rnd.sample(range(len(sorted_col)),
+                         test_size)
+plot_colours(sorted_col, permutation, "Tabu")
