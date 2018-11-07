@@ -191,12 +191,11 @@ def mhc(tries):
 def tabu():
     current_solution = random_solution(test_colours)  # get a initial solution
 
-    tabu_list = [(current_solution, current_solution, current_solution, current_solution, current_solution,
-                  current_solution, current_solution, current_solution, current_solution, current_solution)]  # generate a tabu list of moves we cant do
+    tabu_list = []
 
-    for i in range(9):  # loop till a condition is met
+    for i in range(100):  # loop till a condition is met
 
-        current_solution.append(tabu_list)  # add the starting value to the tabu list
+        tabu_list.append(current_solution)  # add the starting value to the tabu list
 
         random_neighbour1 = swap_colours(current_solution)  # get a random neighbour of our current solution
         total1 = cal_total(random_neighbour1)  # find its total
@@ -204,7 +203,7 @@ def tabu():
         lowest = total1  # set this total as the lowest
         current_best = random_neighbour1[:]  # set this new solution to the current best solution
 
-        for a in range(9):
+        for a in range(len(tabu_list)):
             if current_best in tabu_list:  # check to see if the current best is in the tabu list
                 current_best = current_solution[:]  # if it is then reverse the change
 
@@ -214,7 +213,7 @@ def tabu():
         if total2 < lowest:
             lowest = total2
             current_best = random_neighbour2[:]
-            for a in range(9):
+            for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
@@ -224,7 +223,7 @@ def tabu():
         if total3 < lowest:
             lowest = total3
             current_best = random_neighbour3[:]
-            for a in range(9):
+            for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
@@ -234,7 +233,7 @@ def tabu():
         if total4 < lowest:
             lowest = total4
             current_best = random_neighbour4[:]
-            for a in range(9):
+            for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
@@ -244,7 +243,7 @@ def tabu():
         if total5 < lowest:
             lowest = total5
             current_best = random_neighbour5[:]
-            for a in range(9):
+            for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
