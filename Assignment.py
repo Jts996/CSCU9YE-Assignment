@@ -188,6 +188,68 @@ def mhc(tries):
 
     return best_solution
 
+def tabu():
+    current_solution = random_solution(test_colours)  # get a initial solution
+
+    tabu_list = [(current_solution, current_solution, current_solution, current_solution, current_solution,
+                  current_solution, current_solution, current_solution, current_solution, current_solution)]  # generate a tabu list of moves we cant do
+
+    for i in range(9):  # loop till a condition is met
+
+        current_solution.append(tabu_list)  # add the starting value to the tabu list
+
+        random_neighbour1 = swap_colours(current_solution)  # get a random neighbour of our current solution
+        total1 = cal_total(random_neighbour1)  # find its total
+
+        lowest = total1  # set this total as the lowest
+        current_best = random_neighbour1[:]  # set this new solution to the current best solution
+
+        for a in range(9):
+            if current_best in tabu_list:  # check to see if the current best is in the tabu list
+                current_best = current_solution[:]  # if it is then reverse the change
+
+        random_neighbour2 = swap_colours(current_solution)  # do this for multiple neighbours always checking to see if a new one is lower
+        total2 = cal_total(random_neighbour2)
+
+        if total2 < lowest:
+            lowest = total2
+            current_best = random_neighbour2[:]
+            for a in range(9):
+                if current_best in tabu_list:
+                    current_best = current_solution[:]
+
+        random_neighbour3 = swap_colours(current_solution)
+        total3 = cal_total(random_neighbour3)
+
+        if total3 < lowest:
+            lowest = total3
+            current_best = random_neighbour3[:]
+            for a in range(9):
+                if current_best in tabu_list:
+                    current_best = current_solution[:]
+
+        random_neighbour4 = swap_colours(current_solution)
+        total4 = cal_total(random_neighbour4)
+
+        if total4 < lowest:
+            lowest = total4
+            current_best = random_neighbour4[:]
+            for a in range(9):
+                if current_best in tabu_list:
+                    current_best = current_solution[:]
+
+        random_neighbour5 = swap_colours(current_solution)
+        total5 = cal_total(random_neighbour5)
+
+        if total5 < lowest:
+            lowest = total5
+            current_best = random_neighbour5[:]
+            for a in range(9):
+                if current_best in tabu_list:
+                    current_best = current_solution[:]
+
+    return current_solution  # return the best solution
+
 
 # Reads the file  of colours
 # Returns the number of colours in the file and a list with the colours (RGB) values
