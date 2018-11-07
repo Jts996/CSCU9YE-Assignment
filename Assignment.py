@@ -44,18 +44,22 @@ def random_solution(lst):
     return rnd_solution
 
 
-# Swap two colours
+# Swap two colours at random indexes
 def swap_colours(lst):
     new_solution = lst
     not_swapped = True
 
     while not_swapped:
+        # Generate two random indexes
         random_index_one = random_index_greater_zero(new_solution)
         random_index_two = random_index_greater_zero(new_solution)
 
+        # Make sure they are not the same index
         if random_index_one != random_index_two:
+            # Extract the corresponding information from each index
             colour_one = new_solution[random_index_one]
             colour_two = new_solution[random_index_two]
+            # Swap the colours to make the new random solution
             new_solution[random_index_one] = colour_two
             new_solution[random_index_two] = colour_one
             not_swapped = False
@@ -110,11 +114,16 @@ def local_optima(sol):
     optima = False
     ind = 0
     while ind < len(s):
+        # Create a new random solution
         random_sol = random_solution(sol)
+        # Calculate the total of the new solution
         total_two = cal_total(random_sol)
+        # Compare the two totals
+        # If less than, there is a better solution present
         if total_two < total_one:
             total_one = total_two
             optima = True
+        # If greater than, there are no better solutions
         else:
             optima = False
         ind += 1
