@@ -8,7 +8,6 @@ test_colours = []
 
 # Func author: James Simpson
 # This function is to calculate the difference in two colours
-
 def evaluate(colour1, colour2):
     # This is the break down of colour one
     red1, green1, blue1 = float(colour1[0]), float(colour1[1]), float(colour1[2])
@@ -23,29 +22,63 @@ def evaluate(colour1, colour2):
     return distance
 
 
-# Create a new random index
-def random_index(lis):
-    index_rand = rnd.randint(0, (len(lis) - 1))
+# Func Author: James Simpson
+# Create a new random index, This is primarily for the greedy search
+def random_index(lst):
+    index_rand = rnd.randint(0, (len(lst) - 1))
     return index_rand
 
 
+# Func Author: James Simpson
 #  create random index not including first element
 def random_index_greater_zero(lst):
     index_rand = rnd.randint(1, (len(lst) - 1))
     return index_rand
 
 
-# Create random solutions
-def random_solution(lst):
+# Func Author: James Simpson
+# Create completely random solutions
+def completely_random_solution(lst):
     rnd_solution = []
     for ind in range(len(lst)):
-       rnd_solution = swap_colours(lst)
-
+        rnd_solution = swap_colours(lst)
     return rnd_solution
 
 
-# Swap two colours at random indexes
+# Func Author: James Simpson
+# Create random solutions, ignoring first index
+def random_solution_leaving_first_index(lst):
+    rnd_solution = []
+    for ind in range(len(lst)):
+        rnd_solution = swap_colours_more(lst)
+
+    return rnd_solution
+
+# Func Author: James Simpson
+# Swap two colours at random indexes, including the first index
 def swap_colours(lst):
+    new_solution = lst
+    not_swapped = True
+
+    while not_swapped:
+        # Generate two random indexes
+        random_index_one = random_index(new_solution)
+        random_index_two = random_index(new_solution)
+        # Make sure they are not the same index
+        if random_index_one != random_index_two:
+            # Extract the corresponding information from each index
+            colour_one = new_solution[random_index_one]
+            colour_two = new_solution[random_index_two]
+            # Swap the colours to make the new random solution
+            new_solution[random_index_one] = colour_two
+            new_solution[random_index_two] = colour_one
+            not_swapped = False
+    return new_solution
+
+
+# Func Author: James Simpson
+# Swap two colours at random indexes, leaving the first index
+def swap_colours_more(lst):
     new_solution = lst
     not_swapped = True
 
@@ -70,7 +103,7 @@ def swap_colours(lst):
 # This is an implementation of a greedy heuristic to sort the colours into
 # colour order
 def greedy_heuristics(colour_list):
-    rnd_colour_list = random_solution(colour_list)
+    rnd_colour_list = completely_random_solution(colour_list)
     sorted_colours = []
     dis = 0
     distances = []  # Keeping a record of all the distances from the initial colour to then compare new distances
@@ -96,6 +129,7 @@ def greedy_heuristics(colour_list):
     return sorted_colours
 
 
+# Func Author: James Simpson
 # Method to calculate the total distance of a solution
 def cal_total(sol):
     s = sol
@@ -106,67 +140,81 @@ def cal_total(sol):
     return total
 
 
+# Func Author: James Simpson
 #  Method which receives a solution and uses 1-bit flp to find whether or not it  can find a better solution
 def local_optima(sol):
     s = sol
-    total_one = cal_total(sol)
+    total_one = cal_total(s)
 
-    optima = False
+    optima = True
+    not_better = True
     ind = 0
-    while ind < len(s):
+    while not_better:
+
         # Create a new random solution
-        random_sol = random_solution(sol)
+        random_sol = random_solution_leaving_first_index(s)
         # Calculate the total of the new solution
         total_two = cal_total(random_sol)
         # Compare the two totals
         # If less than, there is a better solution present
-        if total_two < total_one:
+        if total_two >= total_one:
+            optima = False
+            ind += 1
+        # If greater than, there are no better solutions
+        elif total_two < total_one:
             total_one = total_two
             optima = True
-        # If greater than, there are no better solutions
-        else:
-            optima = False
-        ind += 1
+            not_better = False
+        if ind == len(sol):
+            not_better = False
+
+    # print(str(optima))
     return optima
 
 
+# Func Author: James Simpson
 # Finding the next valid Solution
 def random_better_solution(sol):
     not_better = True
     current_best_total = cal_total(sol)
+    ind = 0
     while not_better:
         temp_sol = sol
-        temp_sol = random_solution(temp_sol)
+        temp_sol = random_solution_leaving_first_index(temp_sol)
         competitor_total = cal_total(temp_sol)
 
         if competitor_total < current_best_total:
             sol = temp_sol
             not_better = False
+        elif competitor_total >= current_best_total:
+            ind += 1
+        if ind == len(sol):
+            not_better = False
     return sol
 
 
-# Func author: Chris Hayes & James Simpson
+# Func author: James Simpson
 # This is an implementation of th Hill Climbing algorithm
 def hill_climbing():
-    initial_solution = random_solution(test_colours)  # This is the original random list
+    initial_solution = completely_random_solution(test_colours)  # This is the original random list
     best_solution = initial_solution  # This is the best solution found within the specified number of iterations
-    not_best = True  # Flag for the while loop
-    totals = []
+    not_best = local_optima(best_solution)  # Flag for the while loop
+    totals = []  # For testing the total gets lower each time
     best_total = cal_total(best_solution)  # The total between the colours in the current best solution
     totals.append(best_total)
     while not_best:
-        competitor_solution = random_solution(best_solution)
+        competitor_solution = random_better_solution(best_solution)
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
         # the new random solution
-        if best_solution != random_solution:
+        if best_solution != competitor_solution:
 
             # If the total distance of the new solution is less than the old solution
             # this is the new best solution
             if competitor_total < best_total:
                 best_solution = competitor_solution
-                # print("The best solution is: " + str(best_solution))
                 best_total = competitor_total
-                totals.append(competitor_total)
+                totals.append(best_total)
+                not_best = local_optima(best_solution)
             else:
                 not_best = local_optima(best_solution)
         else:
@@ -174,22 +222,26 @@ def hill_climbing():
     return best_solution, best_total
 
 
+# Func Author: James Simpson
 def mhc(tries):
-    best_solution = random_solution(test_colours)
+    best_solution = completely_random_solution(test_colours)
     iterations = 0
     total = cal_total(best_solution)
-
+    totals = []
+    totals.append(total)
     while iterations < tries:
+        print("Try: " + str(iterations))
         competitor_sol, competitor_tot = hill_climbing()
         if competitor_tot < total:
             best_solution = competitor_sol
             total = competitor_tot
+            totals.append(total)
         iterations += 1
-
     return best_solution
 
+# Func Author: Chris Hayes
 def tabu():
-    current_solution = random_solution(test_colours)  # get a initial solution
+    current_solution = completely_random_solution(test_colours)  # get a initial solution
 
     tabu_list = []
 
@@ -197,7 +249,7 @@ def tabu():
 
         tabu_list.append(current_solution)  # add the starting value to the tabu list
 
-        random_neighbour1 = swap_colours(current_solution)  # get a random neighbour of our current solution
+        random_neighbour1 = random_solution_leaving_first_index(current_solution)  # get a random neighbour of our current solution
         total1 = cal_total(random_neighbour1)  # find its total
 
         lowest = total1  # set this total as the lowest
@@ -207,7 +259,7 @@ def tabu():
             if current_best in tabu_list:  # check to see if the current best is in the tabu list
                 current_best = current_solution[:]  # if it is then reverse the change
 
-        random_neighbour2 = swap_colours(current_solution)  # do this for multiple neighbours always checking to see if a new one is lower
+        random_neighbour2 = random_solution_leaving_first_index(current_solution)  # do this for multiple neighbours always checking to see if a new one is lower
         total2 = cal_total(random_neighbour2)
 
         if total2 < lowest:
@@ -217,7 +269,7 @@ def tabu():
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
-        random_neighbour3 = swap_colours(current_solution)
+        random_neighbour3 = random_solution_leaving_first_index(current_solution)
         total3 = cal_total(random_neighbour3)
 
         if total3 < lowest:
@@ -227,7 +279,7 @@ def tabu():
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
-        random_neighbour4 = swap_colours(current_solution)
+        random_neighbour4 = random_solution_leaving_first_index(current_solution)
         total4 = cal_total(random_neighbour4)
 
         if total4 < lowest:
@@ -237,11 +289,10 @@ def tabu():
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
-        random_neighbour5 = swap_colours(current_solution)
+        random_neighbour5 = random_solution_leaving_first_index(current_solution)
         total5 = cal_total(random_neighbour5)
 
         if total5 < lowest:
-            lowest = total5
             current_best = random_neighbour5[:]
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
@@ -273,7 +324,7 @@ def read_file(fname):
 def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
-    ratio = 4  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
+    ratio = 20  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
     img = np.zeros((ratio, len(col), 3))
     for i in range(0, len(col)):
         img[:, i, :] = colours[perm[i]]
@@ -293,7 +344,7 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 500  # Size of the subset of colours for testing
+test_size = 10  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
