@@ -242,10 +242,10 @@ def mhc(tries):
 # Func Author: Chris Hayes
 def tabu():
     current_solution = completely_random_solution(test_colours)  # get a initial solution
-
+    not_best = local_optima(current_solution)
     tabu_list = []
 
-    for i in range(100):  # loop till a condition is met
+    while not_best:  # loop till a condition is met
 
         tabu_list.append(current_solution)  # add the starting value to the tabu list
 
@@ -269,6 +269,9 @@ def tabu():
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
+        else:
+            not_best = local_optima(current_solution)
+
         random_neighbour3 = random_solution_leaving_first_index(current_solution)
         total3 = cal_total(random_neighbour3)
 
@@ -278,6 +281,8 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
+        else:
+            not_best = local_optima(current_solution)
 
         random_neighbour4 = random_solution_leaving_first_index(current_solution)
         total4 = cal_total(random_neighbour4)
@@ -288,6 +293,8 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
+        else:
+            not_best = local_optima(current_solution)
 
         random_neighbour5 = random_solution_leaving_first_index(current_solution)
         total5 = cal_total(random_neighbour5)
@@ -297,6 +304,8 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
+        else:
+            not_best = local_optima(current_solution)
 
     return current_solution  # return the best solution
 
