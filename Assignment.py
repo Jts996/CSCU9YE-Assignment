@@ -54,6 +54,7 @@ def random_solution_leaving_first_index(lst):
 
     return rnd_solution
 
+
 # Func Author: James Simpson
 # Swap two colours at random indexes, including the first index
 def swap_colours(lst):
@@ -213,7 +214,7 @@ def hill_climbing():
             if competitor_total < best_total:
                 best_solution = competitor_solution
                 best_total = competitor_total
-                totals.append(best_total)
+                # totals.append(best_total)  #  For Testing
                 not_best = local_optima(best_solution)
             else:
                 not_best = local_optima(best_solution)
@@ -238,6 +239,7 @@ def mhc(tries):
             totals.append(total)
         iterations += 1
     return best_solution
+
 
 # Func Author: Chris Hayes
 def tabu():
@@ -269,9 +271,6 @@ def tabu():
                 if current_best in tabu_list:
                     current_best = current_solution[:]
 
-        else:
-            not_best = local_optima(current_solution)
-
         random_neighbour3 = random_solution_leaving_first_index(current_solution)
         total3 = cal_total(random_neighbour3)
 
@@ -281,8 +280,6 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
-        else:
-            not_best = local_optima(current_solution)
 
         random_neighbour4 = random_solution_leaving_first_index(current_solution)
         total4 = cal_total(random_neighbour4)
@@ -293,8 +290,6 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
-        else:
-            not_best = local_optima(current_solution)
 
         random_neighbour5 = random_solution_leaving_first_index(current_solution)
         total5 = cal_total(random_neighbour5)
@@ -304,8 +299,8 @@ def tabu():
             for a in range(len(tabu_list)):
                 if current_best in tabu_list:
                     current_best = current_solution[:]
-        else:
-            not_best = local_optima(current_solution)
+
+        not_best = local_optima(current_solution)
 
     return current_solution  # return the best solution
 
@@ -353,18 +348,13 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 10  # Size of the subset of colours for testing
+test_size = 500  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
                          test_size)  # produces random permutation of length test_size, from the numbers 0 to
 # test_size -1
 plot_colours(test_colours, permutation, "Original")
-
-# d1 = evaluate(colours[1], colours[6])
-# d2 = evaluate(colours[10], colours[6])
-# print(str(d1))
-# print(str(d2))
 
 sorted_col = greedy_heuristics(test_colours)
 permutation = rnd.sample(range(len(sorted_col)),
