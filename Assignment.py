@@ -200,9 +200,8 @@ def hill_climbing():
     initial_solution = completely_random_solution(test_colours)  # This is the original random list
     best_solution = initial_solution  # This is the best solution found within the specified number of iterations
     not_best = local_optima(best_solution)  # Flag for the while loop
-    totals = []  # For testing the total gets lower each time
     best_total = cal_total(best_solution)  # The total between the colours in the current best solution
-    totals.append(best_total)
+    # totals = [best_total]  # For testing the total gets lower each time
     while not_best:
         competitor_solution = random_better_solution(best_solution)
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
@@ -224,12 +223,12 @@ def hill_climbing():
 
 
 # Func Author: James Simpson
+# This runs the Hill Climbing over multiple iteration, specified by the user
 def mhc(tries):
     best_solution = completely_random_solution(test_colours)
     iterations = 0
     total = cal_total(best_solution)
-    totals = []
-    totals.append(total)
+    totals = [total]
     while iterations < tries:
         print("Try: " + str(iterations))
         competitor_sol, competitor_tot = hill_climbing()
@@ -348,7 +347,7 @@ os.chdir(dir_path)  # Change the working directory so we can read the file
 
 ncolors, colours = read_file('colours.txt')  # Total number of colours and list of colours
 
-test_size = 500  # Size of the subset of colours for testing
+test_size = 100  # Size of the subset of colours for testing
 test_colours = colours[0:test_size]  # list of colours for testing
 
 permutation = rnd.sample(range(test_size),
@@ -367,7 +366,7 @@ permutation = rnd.sample(range(len(sorted_col)),
 plot_colours(sorted_col, permutation, "Hill-Climbing")
 
 
-sorted_col = mhc(10)
+sorted_col = mhc(50)
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
 plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
