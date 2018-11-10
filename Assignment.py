@@ -206,19 +206,19 @@ def hill_climbing():
         competitor_solution = random_better_solution(best_solution)
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
         # the new random solution
-        if best_solution != competitor_solution:
 
-            # If the total distance of the new solution is less than the old solution
-            # this is the new best solution
-            if competitor_total < best_total:
-                best_solution = competitor_solution
-                best_total = competitor_total
-                # totals.append(best_total)  #  For Testing
-                not_best = local_optima(best_solution)
-            else:
-                not_best = local_optima(best_solution)
+        print("I'm here")
+        # If the total distance of the new solution is less than the old solution
+        # this is the new best solution
+        if competitor_total < best_total:
+            best_solution = competitor_solution
+            best_total = competitor_total
+            # totals.append(best_total)  #  For Testing
+            print("New best total: " + str(best_total))
+            not_best = local_optima(best_solution)
         else:
             not_best = local_optima(best_solution)
+
     return best_solution, best_total
 
 
