@@ -166,10 +166,10 @@ def local_optima(sol):
             total_one = total_two
             optima = True
             not_better = False
-        if ind == len(sol):
+        if ind == (2 ** len(s)):
             not_better = False
 
-    # print(str(optima))
+    print(str(ind))
     return optima
 
 
@@ -207,14 +207,13 @@ def hill_climbing():
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
         # the new random solution
 
-        print("I'm here")
         # If the total distance of the new solution is less than the old solution
         # this is the new best solution
         if competitor_total < best_total:
             best_solution = competitor_solution
             best_total = competitor_total
             # totals.append(best_total)  #  For Testing
-            print("New best total: " + str(best_total))
+            # print("New best total: " + str(best_total))
             not_best = local_optima(best_solution)
         else:
             not_best = local_optima(best_solution)
@@ -230,7 +229,7 @@ def mhc(tries):
     total = cal_total(best_solution)
     totals = [total]
     while iterations < tries:
-        print("Try: " + str(iterations))
+        print(str(iterations))
         competitor_sol, competitor_tot = hill_climbing()
         if competitor_tot < total:
             best_solution = competitor_sol
@@ -327,7 +326,7 @@ def read_file(fname):
 def plot_colours(col, perm, name):
     assert len(col) == len(perm)
 
-    ratio = 20  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
+    ratio = 10  # ratio of line height/width, e.g. colour lines will have height 10 and width 1
     img = np.zeros((ratio, len(col), 3))
     for i in range(0, len(col)):
         img[:, i, :] = colours[perm[i]]
@@ -353,8 +352,8 @@ test_colours = colours[0:test_size]  # list of colours for testing
 permutation = rnd.sample(range(test_size),
                          test_size)  # produces random permutation of length test_size, from the numbers 0 to
 # test_size -1
-plot_colours(test_colours, permutation, "Original")
-
+#plot_colours(test_colours, permutation, "Original")
+#
 sorted_col = greedy_heuristics(test_colours)
 permutation = rnd.sample(range(len(sorted_col)),
                          test_size)
@@ -366,12 +365,12 @@ permutation = rnd.sample(range(len(sorted_col)),
 plot_colours(sorted_col, permutation, "Hill-Climbing")
 
 
-sorted_col = mhc(50)
-permutation = rnd.sample(range(len(sorted_col)),
-                         test_size)
-plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
+# sorted_col = mhc(2)
+#permutation = rnd.sample(range(len(sorted_col)),
+ #                        test_size)
+#plot_colours(sorted_col, permutation, "Multi-run Hill Climb")
 
-sorted_col = tabu()
-permutation = rnd.sample(range(len(sorted_col)),
-                         test_size)
-plot_colours(sorted_col, permutation, "Tabu")
+#sorted_col = tabu()
+#permutation = rnd.sample(range(len(sorted_col)),
+                        # test_size)
+#plot_colours(sorted_col, permutation, "Tabu")
