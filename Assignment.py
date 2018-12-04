@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random as rnd
 import os
+import
 
 test_colours = []
 
@@ -18,6 +19,7 @@ def evaluate(colour1, colour2):
 
     # Finally conducting Pythagoras to find the Euclidean distance
     distance = np.sqrt((red_diff * red_diff) + (green_diff * green_diff) + (blue_diff * blue_diff))
+    distance = np.e
 
     return distance
 
@@ -147,7 +149,7 @@ def local_optima(sol):
     s = sol
     total_one = cal_total(s)
 
-    optima = True
+    optima = False
     not_better = True
     ind = 0
     while not_better:
@@ -200,9 +202,11 @@ def hill_climbing():
     initial_solution = completely_random_solution(test_colours)  # This is the original random list
     best_solution = initial_solution  # This is the best solution found within the specified number of iterations
     not_best = local_optima(best_solution)  # Flag for the while loop
+    i = 0
     best_total = cal_total(best_solution)  # The total between the colours in the current best solution
     # totals = [best_total]  # For testing the total gets lower each time
-    while not_best:
+    while i < 3000:
+        print(str(i))
         competitor_solution = random_better_solution(best_solution)
         competitor_total = cal_total(competitor_solution)  # This is the total distance between the colours in
         # the new random solution
@@ -214,9 +218,10 @@ def hill_climbing():
             best_total = competitor_total
             # totals.append(best_total)  #  For Testing
             # print("New best total: " + str(best_total))
-            not_best = local_optima(best_solution)
-        else:
-            not_best = local_optima(best_solution)
+            #not_best = local_optima(best_solution)
+        #else:
+            #not_best = local_optima(best_solution)
+        i += 1
 
     return best_solution, best_total
 
